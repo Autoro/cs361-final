@@ -145,24 +145,24 @@ def main()
   homeWaypoint = Waypoint.new(-121.5, 45.5, 30, "home", "flag")
   storeWaypoint = Waypoint.new(-121.5, 45.6, nil, "store", "dot")
 
-  firstTrackStart = [
-    Point.new(-122, 45),
-    Point.new(-122, 46),
-    Point.new(-121, 46)
-  ]
+  firstTrack = Track.new([
+    TrackSegment.new([
+      Point.new(-122, 45),
+      Point.new(-122, 46),
+      Point.new(-121, 46)
+    ]),
+    TrackSegment.new([
+      Point.new(-121, 45),
+      Point.new(-121, 46)
+    ])
+  ], "track 1")
 
-  firstTrackEnd = [
-    Point.new(-121, 45),
-    Point.new(-121, 46)
-  ]
-
-  secondTrackStart = [
-    Point.new(-121, 45.5),
-    Point.new(-122, 45.5)
-  ]
-
-  firstTrack = Track.new([ TrackSegment.new(firstTrackStart), TrackSegment.new(firstTrackEnd) ], "track 1")
-  secondTrack = Track.new([ TrackSegment.new(secondTrackStart) ], "track 2")
+  secondTrack = Track.new([
+    TrackSegment.new([
+      Point.new(-121, 45.5),
+      Point.new(-122, 45.5)
+    ])
+  ], "track 2")
 
   world = World.new("My Data", [ homeWaypoint, storeWaypoint, firstTrack, secondTrack ])
 
