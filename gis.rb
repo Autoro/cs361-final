@@ -77,12 +77,10 @@ class Point
 end
 
 class Waypoint
-  attr_reader :lat, :lon, :ele, :name, :type
+  attr_reader :point, :name, :type
 
-  def initialize(lon, lat, ele = nil, name = nil, type = nil)
-    @lat = lat
-    @lon = lon
-    @ele = ele
+  def initialize(point, name = nil, type = nil)
+    @point = point
     @name = name
     @type = type
   end
@@ -91,13 +89,8 @@ class Waypoint
     json = '{"type": "Feature",'
 
     json += '"geometry": {"type": "Point","coordinates": '
-    json += "[#{@lon},#{@lat}"
-
-    if ele != nil
-      json += ",#{@ele}"
-    end
-
-    json += ']},'
+    json += self.point.get_json
+    json += '},'
 
     if name != nil or type != nil
       json += '"properties": {'
@@ -149,8 +142,8 @@ class World
 end
 
 def main()
-  homeWaypoint = Waypoint.new(-121.5, 45.5, 30, "home", "flag")
-  storeWaypoint = Waypoint.new(-121.5, 45.6, nil, "store", "dot")
+  homeWaypoint = Waypoint.new(Point.new(-121.5, 45.5, 30), "home", "flag")
+  storeWaypoint = Waypoint.new(Point.new(-121.5, 45.6), "store", "dot")
 
   firstTrack = Track.new([
     TrackSegment.new([

@@ -4,8 +4,8 @@ require 'test/unit'
 
 class TestGis < Test::Unit::TestCase
   def setup
-    @homeWaypoint = Waypoint.new(-121.5, 45.5, 30, "home", "flag")
-    @storeWaypoint = Waypoint.new(-121.5, 45.6, nil, "store", "dot")
+    @homeWaypoint = Waypoint.new(Point.new(-121.5, 45.5, 30), "home", "flag")
+    @storeWaypoint = Waypoint.new(Point.new(-121.5, 45.6), "store", "dot")
 
     @firstTrack = Track.new([
       TrackSegment.new([
@@ -35,7 +35,7 @@ class TestGis < Test::Unit::TestCase
   end
 
   def test_waypoint_no_elevation_or_name
-    waypoint = Waypoint.new(-121.5, 45.5, nil, nil, "flag")
+    waypoint = Waypoint.new(Point.new(-121.5, 45.5), nil, "flag")
     expected = JSON.parse('{"type": "Feature","properties": {"icon": "flag"},"geometry": {"type": "Point","coordinates": [-121.5,45.5]}}')
     result = JSON.parse(waypoint.get_json)
 
@@ -43,7 +43,7 @@ class TestGis < Test::Unit::TestCase
   end
 
   def test_waypoint_no_eleveation_or_type
-    waypoint = Waypoint.new(-121.5, 45.5, nil, "store", nil)
+    waypoint = Waypoint.new(Point.new(-121.5, 45.5), "store", nil)
     expected = JSON.parse('{"type": "Feature","properties": {"title": "store"},"geometry": {"type": "Point","coordinates": [-121.5,45.5]}}')
     result = JSON.parse(waypoint.get_json)
 
