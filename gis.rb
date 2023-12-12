@@ -85,7 +85,7 @@ class Waypoint
     @type = type
   end
 
-  def get_waypoint_json(indent=0)
+  def get_waypoint_json()
     json = '{"type": "Feature",'
 
     json += '"geometry": {"type": "Point","coordinates": '
@@ -131,7 +131,7 @@ class World
     @features.append(t)
   end
 
-  def to_geojson(indent = 0)
+  def to_geojson()
     json = '{"type": "FeatureCollection","features": ['
 
     @features.each_with_index do |f, i|
