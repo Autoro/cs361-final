@@ -11,7 +11,7 @@ class Track
     @segments = segment_objects
   end
 
-  def get_track_json()
+  def get_json()
     json = '{'
     json += '"type": "Feature", '
 
@@ -85,7 +85,7 @@ class Waypoint
     @type = type
   end
 
-  def get_waypoint_json()
+  def get_json()
     json = '{"type": "Feature",'
 
     json += '"geometry": {"type": "Point","coordinates": '
@@ -139,11 +139,7 @@ class World
         json +=","
       end
 
-      if f.class == Track
-        json += f.get_track_json
-      elsif f.class == Waypoint
-        json += f.get_waypoint_json
-      end
+      json += f.get_json
     end
 
     json + "]}"
