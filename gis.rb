@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 
 class Track
+  attr_accessor :segments, :name
+
   def initialize(segments, name = nil)
     @segments = segments
     @name = name
@@ -10,9 +12,9 @@ class Track
     json = '{'
     json += '"type": "Feature", '
 
-    if @name != nil
+    if self.name != nil
       json += '"properties": {'
-      json += '"title": "' + @name + '"'
+      json += '"title": "' + self.name + '"'
       json += '},'
     end
 
@@ -20,31 +22,12 @@ class Track
     json += '"type": "MultiLineString",'
     json +='"coordinates": ['
 
-    @segments.each_with_index do |s, index|
+    self.segments.each_with_index do |segment, index|
       if index > 0
         json += ","
       end
 
-      json += '['
-
-      tsj = ''
-      s.coordinates.each do |c|
-        if tsj != ''
-          tsj += ','
-        end
-
-        tsj += '['
-        tsj += "#{c.lon},#{c.lat}"
-
-        if c.ele != nil
-          tsj += ",#{c.ele}"
-        end
-
-        tsj += ']'
-      end
-
-      json +=tsj
-      json +=']'
+      json += segment.get_json
     end
 
     json + ']}}'
@@ -57,6 +40,19 @@ class TrackSegment
   def initialize(coordinates)
     @coordinates = coordinates
   end
+
+  def get_json
+    json = '['
+      self.coordinates.each_with_index do |point, i|
+        if i != 0
+          json += ','
+        end
+
+        json += point.get_json
+      end
+
+      json += ']'
+  end
 end
 
 class Point
@@ -66,6 +62,17 @@ class Point
     @lon = lon
     @lat = lat
     @ele = ele
+  end
+
+  def get_json
+    json = '['
+    json += "#{ self.lon },#{ self.lat }"
+
+    if self.ele != nil
+      json += ",#{ self.ele }"
+    end
+
+    json += ']'
   end
 end
 
