@@ -92,19 +92,19 @@ class Waypoint
     json += self.point.get_json
     json += '},'
 
-    if name != nil or type != nil
+    if self.name != nil or self.type != nil
       json += '"properties": {'
 
-      if name != nil
-        json += '"title": "' + @name + '"'
+      if self.name != nil
+        json += '"title": "' + self.name + '"'
       end
 
-      if type != nil
-        if name != nil
+      if self.type != nil
+        if self.name != nil
           json += ','
         end
 
-        json += '"icon": "' + @type + '"'
+        json += '"icon": "' + self.type + '"'
       end
 
       json += '}'
