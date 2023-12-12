@@ -7,24 +7,24 @@ class TestGis < Test::Unit::TestCase
     @homeWaypoint = Waypoint.new(-121.5, 45.5, 30, "home", "flag")
     @storeWaypoint = Waypoint.new(-121.5, 45.6, nil, "store", "dot")
 
-    @firstTrackStart = [
+    firstTrackStart = [
       Point.new(-122, 45),
       Point.new(-122, 46),
       Point.new(-121, 46)
     ]
 
-    @firstTrackEnd = [
+    firstTrackEnd = [
       Point.new(-121, 45),
       Point.new(-121, 46)
     ]
 
-    @secondTrackStart = [
+    secondTrackStart = [
       Point.new(-121, 45.5),
       Point.new(-122, 45.5)
     ]
 
-    @firstTrack = Track.new([ @firstTrackStart, @firstTrackEnd ], "track 1")
-    @secondTrack = Track.new([ @secondTrackStart], "track 2")
+    @firstTrack = Track.new([ TrackSegment.new(firstTrackStart), TrackSegment.new(firstTrackEnd) ], "track 1")
+    @secondTrack = Track.new([ TrackSegment.new(secondTrackStart) ], "track 2")
   end
 
   def test_waypoint_complete
