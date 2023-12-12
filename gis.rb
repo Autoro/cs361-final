@@ -117,24 +117,25 @@ class Waypoint
 end
 
 class World
+  attr_accessor :name, :features
   def initialize(name, features)
     @name = name
     @features = features
   end
 
   def add_feature(f)
-    @features.append(t)
+    self.features.append(t)
   end
 
   def to_geojson()
     json = '{"type": "FeatureCollection","features": ['
 
-    @features.each_with_index do |f, i|
+    self.features.each_with_index do |feature, i|
       if i != 0
         json +=","
       end
 
-      json += f.get_json
+      json += feature.get_json
     end
 
     json + "]}"
