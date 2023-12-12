@@ -8,7 +8,6 @@ class Track
       segment_objects.append(TrackSegment.new(s))
     end
 
-    # set segments to segment_objects
     @segments = segment_objects
   end
 
@@ -26,7 +25,6 @@ class Track
     json += '"type": "MultiLineString",'
     json +='"coordinates": ['
 
-    # Loop through all the segment objects
     @segments.each_with_index do |s, index|
       if index > 0
         json += ","
@@ -34,14 +32,12 @@ class Track
 
       json += '['
 
-      # Loop through all the coordinates in the segment
       tsj = ''
       s.coordinates.each do |c|
         if tsj != ''
           tsj += ','
         end
 
-        # Add the coordinate
         tsj += '['
         tsj += "#{c.lon},#{c.lat}"
 
@@ -92,7 +88,6 @@ class Waypoint
   def get_waypoint_json(indent=0)
     json = '{"type": "Feature",'
 
-    # if name is not nil or type is not nil
     json += '"geometry": {"type": "Point","coordinates": '
     json += "[#{@lon},#{@lat}"
 
@@ -109,12 +104,12 @@ class Waypoint
         json += '"title": "' + @name + '"'
       end
 
-      if type != nil  # if type is not nil
+      if type != nil
         if name != nil
           json += ','
         end
 
-        json += '"icon": "' + @type + '"'  # type is the icon
+        json += '"icon": "' + @type + '"'
       end
 
       json += '}'
@@ -137,7 +132,6 @@ class World
   end
 
   def to_geojson(indent = 0)
-    # Write stuff
     json = '{"type": "FeatureCollection","features": ['
 
     @features.each_with_index do |f, i|
