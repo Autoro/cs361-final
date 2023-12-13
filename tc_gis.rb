@@ -33,7 +33,7 @@ class TestGis < Test::Unit::TestCase
 
   def test_waypoint_complete
     expected = JSON.parse('{"type": "Feature","properties": {"title": "home","icon": "flag"},"geometry": {"type": "Point","coordinates": [-121.5,45.5,30]}}')
-    result = JSON.parse(@homeWaypoint.get_json)
+    result = JSON.parse(JSON.generate(@homeWaypoint))
 
     assert_equal(result, expected)
   end
@@ -41,7 +41,7 @@ class TestGis < Test::Unit::TestCase
   def test_waypoint_no_elevation_or_name
     waypoint = Waypoint.new(Point.new(-121.5, 45.5), { icon: "flag" })
     expected = JSON.parse('{"type": "Feature","properties": {"icon": "flag"},"geometry": {"type": "Point","coordinates": [-121.5,45.5]}}')
-    result = JSON.parse(waypoint.get_json)
+    result = JSON.parse(JSON.generate(waypoint))
 
     assert_equal(result, expected)
   end
@@ -49,21 +49,21 @@ class TestGis < Test::Unit::TestCase
   def test_waypoint_no_eleveation_or_type
     waypoint = Waypoint.new(Point.new(-121.5, 45.5), { title: "store" })
     expected = JSON.parse('{"type": "Feature","properties": {"title": "store"},"geometry": {"type": "Point","coordinates": [-121.5,45.5]}}')
-    result = JSON.parse(waypoint.get_json)
+    result = JSON.parse(JSON.generate(waypoint))
 
     assert_equal(result, expected)
   end
 
   def test_track_two_points
     expected = JSON.parse('{"type": "Feature", "properties": {"title": "track 1"},"geometry": {"type": "MultiLineString","coordinates": [[[-122,45],[-122,46],[-121,46]],[[-121,45],[-121,46]]]}}')
-    result = JSON.parse(@firstTrack.get_json)
+    result = JSON.parse(JSON.generate(@firstTrack))
 
     assert_equal(expected, result)
   end
 
   def test_track_one_point
     expected = JSON.parse('{"type": "Feature", "properties": {"title": "track 2"},"geometry": {"type": "MultiLineString","coordinates": [[[-121,45.5],[-122,45.5]]]}}')
-    result = JSON.parse(@secondTrack.get_json)
+    result = JSON.parse(JSON.generate(@secondTrack))
 
     assert_equal(expected, result)
   end
@@ -72,7 +72,7 @@ class TestGis < Test::Unit::TestCase
     world = World.new("My Data", [ @homeWaypoint, @storeWaypoint, @firstTrack, @secondTrack ])
 
     expected = JSON.parse('{"type": "FeatureCollection","features": [{"type": "Feature","properties": {"title": "home","icon": "flag"},"geometry": {"type": "Point","coordinates": [-121.5,45.5,30]}},{"type": "Feature","properties": {"title": "store","icon": "dot"},"geometry": {"type": "Point","coordinates": [-121.5,45.6]}},{"type": "Feature", "properties": {"title": "track 1"},"geometry": {"type": "MultiLineString","coordinates": [[[-122,45],[-122,46],[-121,46]],[[-121,45],[-121,46]]]}},{"type": "Feature", "properties": {"title": "track 2"},"geometry": {"type": "MultiLineString","coordinates": [[[-121,45.5],[-122,45.5]]]}}]}')
-    result = JSON.parse(world.to_geojson)
+    result = JSON.parse(JSON.generate(world))
 
     assert_equal(expected, result)
   end

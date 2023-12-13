@@ -10,28 +10,24 @@ class Track
     @properties = properties
   end
 
-  def get_json()
-    json = '{'
-    json += '"type": "Feature", '
-    json += '"geometry": {'
-    json += '"type": "MultiLineString",'
-    json +='"coordinates": ['
+  def to_json(*args)
+    result = {
+      type: "Feature",
+      geometry: {
+        type: "MultiLineString",
+        coordinates: []
+      }
+    }
 
-    self.segments.each_with_index do |segment, index|
-      if index > 0
-        json += ","
-      end
-
-      json += segment.get_json
+    for segment in self.segments
+      result[:geometry][:coordinates] << segment
     end
-
-    json += ']}'
 
     if !self.properties.empty?
-      json += ', "properties": ' + self.properties.to_json
+      result[:properties] = self.properties
     end
 
-    json += '}'
+    result.to_json(*args)
   end
 end
 
@@ -42,17 +38,14 @@ class TrackSegment
     @coordinates = coordinates
   end
 
-  def get_json
-    json = '['
-      self.coordinates.each_with_index do |point, i|
-        if i != 0
-          json += ','
-        end
+  def to_json(*args)
+    result = []
 
-        json += point.get_json
-      end
+    for coordinate in coordinates
+      result << coordinate
+    end
 
-      json += ']'
+    result.to_json(*args)
   end
 end
 
@@ -65,15 +58,11 @@ class Point
     @elevation = elevation
   end
 
-  def get_json
-    json = '['
-    json += "#{ self.longitude },#{ self.latitude }"
+  def to_json(*args)
+    result = [ self.longitude, self.latitude ]
+    result << self.elevation unless self.elevation == nil
 
-    if self.elevation != nil
-      json += ",#{ self.elevation }"
-    end
-
-    json += ']'
+    result.to_json(*args)
   end
 end
 
@@ -85,21 +74,20 @@ class Waypoint
     @properties = properties
   end
 
-  def get_json()
-    json = '{'
-    json += '"type": "Feature",'
-    json += '"geometry": {'
-    json += '"type": "Point", '
-    json += '"coordinates": ' + self.point.get_json
-    json += '}'
+  def to_json(*args)
+    result = {
+      type: "Feature",
+      geometry: {
+        type: "Point",
+        coordinates: self.point
+      }
+    }
 
     if !self.properties.empty?
-      json += ', "properties": ' + self.properties.to_json
+      result[:properties] = self.properties
     end
 
-    json += "}"
-
-    return json
+    result.to_json(*args)
   end
 end
 
@@ -115,18 +103,17 @@ class World
     self.features << feature
   end
 
-  def to_geojson()
-    json = '{"type": "FeatureCollection","features": ['
+  def to_json(*args)
+    result = {
+      type: "FeatureCollection",
+      features: []
+    }
 
-    self.features.each_with_index do |feature, i|
-      if i != 0
-        json +=","
-      end
-
-      json += feature.get_json
+    for feature in self.features
+      result[:features] << feature
     end
 
-    json + "]}"
+    result.to_json(*args)
   end
 end
 
@@ -159,7 +146,7 @@ def main()
 
   world = World.new("My Data", [ homeWaypoint, storeWaypoint, firstTrack, secondTrack ])
 
-  puts world.to_geojson()
+  puts JSON.generate(world)
 end
 
 if File.identical?(__FILE__, $0)
