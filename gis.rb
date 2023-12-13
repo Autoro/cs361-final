@@ -2,6 +2,41 @@
 
 require 'json'
 
+class Point
+  attr_reader :longitude, :latitude, :elevation
+
+  def initialize(longitude, latitude, elevation = nil)
+    @longitude = longitude
+    @latitude = latitude
+    @elevation = elevation
+  end
+
+  def to_json(*args)
+    result = [ self.longitude, self.latitude ]
+    result << self.elevation unless self.elevation == nil
+
+    result.to_json(*args)
+  end
+end
+
+class TrackSegment
+  attr_reader :coordinates
+
+  def initialize(coordinates)
+    @coordinates = coordinates
+  end
+
+  def to_json(*args)
+    result = []
+
+    for coordinate in coordinates
+      result << coordinate
+    end
+
+    result.to_json(*args)
+  end
+end
+
 class Track
   attr_accessor :segments, :properties
 
@@ -31,40 +66,7 @@ class Track
   end
 end
 
-class TrackSegment
-  attr_reader :coordinates
 
-  def initialize(coordinates)
-    @coordinates = coordinates
-  end
-
-  def to_json(*args)
-    result = []
-
-    for coordinate in coordinates
-      result << coordinate
-    end
-
-    result.to_json(*args)
-  end
-end
-
-class Point
-  attr_reader :longitude, :latitude, :elevation
-
-  def initialize(longitude, latitude, elevation = nil)
-    @longitude = longitude
-    @latitude = latitude
-    @elevation = elevation
-  end
-
-  def to_json(*args)
-    result = [ self.longitude, self.latitude ]
-    result << self.elevation unless self.elevation == nil
-
-    result.to_json(*args)
-  end
-end
 
 class Waypoint
   attr_reader :point, :properties
@@ -97,10 +99,6 @@ class World
   def initialize(name, features)
     @name = name
     @features = features
-  end
-
-  def add_feature(feature)
-    self.features << feature
   end
 
   def to_json(*args)
