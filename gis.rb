@@ -105,13 +105,14 @@ end
 
 class World
   attr_accessor :name, :features
+
   def initialize(name, features)
     @name = name
     @features = features
   end
 
-  def add_feature(f)
-    self.features.append(t)
+  def add_feature(feature)
+    self.features << feature
   end
 
   def to_geojson()
