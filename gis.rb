@@ -1,20 +1,20 @@
 #!/usr/bin/env ruby
 
 class Track
-  attr_accessor :segments, :name
+  attr_accessor :segments, :title
 
-  def initialize(segments, name = nil)
+  def initialize(segments, title = nil)
     @segments = segments
-    @name = name
+    @title = title
   end
 
   def get_json()
     json = '{'
     json += '"type": "Feature", '
 
-    if self.name != nil
+    if self.title != nil
       json += '"properties": {'
-      json += '"title": "' + self.name + '"'
+      json += '"title": "' + self.title + '"'
       json += '},'
     end
 
@@ -56,20 +56,20 @@ class TrackSegment
 end
 
 class Point
-  attr_reader :lat, :lon, :ele
+  attr_reader :longitude, :latitude, :elevation
 
-  def initialize(lon, lat, ele = nil)
-    @lon = lon
-    @lat = lat
-    @ele = ele
+  def initialize(longitude, latitude, elevation = nil)
+    @longitude = longitude
+    @latitude = latitude
+    @elevation = elevation
   end
 
   def get_json
     json = '['
-    json += "#{ self.lon },#{ self.lat }"
+    json += "#{ self.longitude },#{ self.latitude }"
 
-    if self.ele != nil
-      json += ",#{ self.ele }"
+    if self.elevation != nil
+      json += ",#{ self.elevation }"
     end
 
     json += ']'
@@ -77,12 +77,12 @@ class Point
 end
 
 class Waypoint
-  attr_reader :point, :name, :type
+  attr_reader :point, :title, :icon
 
-  def initialize(point, name = nil, type = nil)
+  def initialize(point, title = nil, icon = nil)
     @point = point
-    @name = name
-    @type = type
+    @title = title
+    @icon = icon
   end
 
   def get_json()
@@ -92,19 +92,19 @@ class Waypoint
     json += self.point.get_json
     json += '},'
 
-    if self.name != nil or self.type != nil
+    if self.title != nil or self.icon != nil
       json += '"properties": {'
 
-      if self.name != nil
-        json += '"title": "' + self.name + '"'
+      if self.title != nil
+        json += '"title": "' + self.title + '"'
       end
 
-      if self.type != nil
-        if self.name != nil
+      if self.icon != nil
+        if self.title != nil
           json += ','
         end
 
-        json += '"icon": "' + self.type + '"'
+        json += '"icon": "' + self.icon + '"'
       end
 
       json += '}'
