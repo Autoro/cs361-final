@@ -66,8 +66,6 @@ class Track
   end
 end
 
-
-
 class Waypoint
   attr_reader :point, :properties
 
