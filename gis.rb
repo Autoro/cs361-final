@@ -1,23 +1,18 @@
 #!/usr/bin/env ruby
 
-class Track
-  attr_accessor :segments, :title
+require 'json'
 
-  def initialize(segments, title = nil)
+class Track
+  attr_accessor :segments, :properties
+
+  def initialize(segments, properties = {})
     @segments = segments
-    @title = title
+    @properties = properties
   end
 
   def get_json()
     json = '{'
     json += '"type": "Feature", '
-
-    if self.title != nil
-      json += '"properties": {'
-      json += '"title": "' + self.title + '"'
-      json += '},'
-    end
-
     json += '"geometry": {'
     json += '"type": "MultiLineString",'
     json +='"coordinates": ['
@@ -30,7 +25,13 @@ class Track
       json += segment.get_json
     end
 
-    json + ']}}'
+    json += ']}'
+
+    if !self.properties.empty?
+      json += ', "properties": ' + self.properties.to_json
+    end
+
+    json += '}'
   end
 end
 
@@ -77,37 +78,23 @@ class Point
 end
 
 class Waypoint
-  attr_reader :point, :title, :icon
+  attr_reader :point, :properties
 
-  def initialize(point, title = nil, icon = nil)
+  def initialize(point, properties = {})
     @point = point
-    @title = title
-    @icon = icon
+    @properties = properties
   end
 
   def get_json()
-    json = '{"type": "Feature",'
+    json = '{'
+    json += '"type": "Feature",'
+    json += '"geometry": {'
+    json += '"type": "Point", '
+    json += '"coordinates": ' + self.point.get_json
+    json += '}'
 
-    json += '"geometry": {"type": "Point","coordinates": '
-    json += self.point.get_json
-    json += '},'
-
-    if self.title != nil or self.icon != nil
-      json += '"properties": {'
-
-      if self.title != nil
-        json += '"title": "' + self.title + '"'
-      end
-
-      if self.icon != nil
-        if self.title != nil
-          json += ','
-        end
-
-        json += '"icon": "' + self.icon + '"'
-      end
-
-      json += '}'
+    if !self.properties.empty?
+      json += ', "properties": ' + self.properties.to_json
     end
 
     json += "}"
@@ -143,27 +130,31 @@ class World
 end
 
 def main()
-  homeWaypoint = Waypoint.new(Point.new(-121.5, 45.5, 30), "home", "flag")
-  storeWaypoint = Waypoint.new(Point.new(-121.5, 45.6), "store", "dot")
+  homeWaypoint = Waypoint.new(Point.new(-121.5, 45.5, 30), { title: "home", icon: "flag" })
+  storeWaypoint = Waypoint.new(Point.new(-121.5, 45.6), { title: "store", icon: "dot" })
 
   firstTrack = Track.new([
-    TrackSegment.new([
-      Point.new(-122, 45),
-      Point.new(-122, 46),
-      Point.new(-121, 46)
-    ]),
-    TrackSegment.new([
-      Point.new(-121, 45),
-      Point.new(-121, 46)
-    ])
-  ], "track 1")
+      TrackSegment.new([
+        Point.new(-122, 45),
+        Point.new(-122, 46),
+        Point.new(-121, 46)
+      ]),
+      TrackSegment.new([
+        Point.new(-121, 45),
+        Point.new(-121, 46)
+      ])
+    ],
+    { title: "track 1" }
+  )
 
   secondTrack = Track.new([
-    TrackSegment.new([
-      Point.new(-121, 45.5),
-      Point.new(-122, 45.5)
-    ])
-  ], "track 2")
+      TrackSegment.new([
+        Point.new(-121, 45.5),
+        Point.new(-122, 45.5)
+      ])
+    ],
+    { title: "track 2" }
+  )
 
   world = World.new("My Data", [ homeWaypoint, storeWaypoint, firstTrack, secondTrack ])
 

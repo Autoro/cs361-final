@@ -4,27 +4,31 @@ require 'test/unit'
 
 class TestGis < Test::Unit::TestCase
   def setup
-    @homeWaypoint = Waypoint.new(Point.new(-121.5, 45.5, 30), "home", "flag")
-    @storeWaypoint = Waypoint.new(Point.new(-121.5, 45.6), "store", "dot")
+    @homeWaypoint = Waypoint.new(Point.new(-121.5, 45.5, 30), { title: "home", icon: "flag" })
+    @storeWaypoint = Waypoint.new(Point.new(-121.5, 45.6), { title: "store", icon: "dot" })
 
     @firstTrack = Track.new([
-      TrackSegment.new([
-        Point.new(-122, 45),
-        Point.new(-122, 46),
-        Point.new(-121, 46)
-      ]),
-      TrackSegment.new([
-        Point.new(-121, 45),
-        Point.new(-121, 46)
-      ])
-    ], "track 1")
+        TrackSegment.new([
+          Point.new(-122, 45),
+          Point.new(-122, 46),
+          Point.new(-121, 46)
+        ]),
+        TrackSegment.new([
+          Point.new(-121, 45),
+          Point.new(-121, 46)
+        ])
+      ],
+      { title: "track 1" }
+    )
 
     @secondTrack = Track.new([
-      TrackSegment.new([
-        Point.new(-121, 45.5),
-        Point.new(-122, 45.5)
-      ])
-    ], "track 2")
+        TrackSegment.new([
+          Point.new(-121, 45.5),
+          Point.new(-122, 45.5)
+        ])
+      ],
+      { title: "track 2" }
+    )
   end
 
   def test_waypoint_complete
@@ -35,7 +39,7 @@ class TestGis < Test::Unit::TestCase
   end
 
   def test_waypoint_no_elevation_or_name
-    waypoint = Waypoint.new(Point.new(-121.5, 45.5), nil, "flag")
+    waypoint = Waypoint.new(Point.new(-121.5, 45.5), { icon: "flag" })
     expected = JSON.parse('{"type": "Feature","properties": {"icon": "flag"},"geometry": {"type": "Point","coordinates": [-121.5,45.5]}}')
     result = JSON.parse(waypoint.get_json)
 
@@ -43,7 +47,7 @@ class TestGis < Test::Unit::TestCase
   end
 
   def test_waypoint_no_eleveation_or_type
-    waypoint = Waypoint.new(Point.new(-121.5, 45.5), "store", nil)
+    waypoint = Waypoint.new(Point.new(-121.5, 45.5), { title: "store" })
     expected = JSON.parse('{"type": "Feature","properties": {"title": "store"},"geometry": {"type": "Point","coordinates": [-121.5,45.5]}}')
     result = JSON.parse(waypoint.get_json)
 
